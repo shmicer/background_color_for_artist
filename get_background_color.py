@@ -3,10 +3,8 @@ import cv2
 
 from PIL import Image, ImageOps, ImageDraw
 
-from pathlib import Path
 
-
-class GetAverageColor:
+class GetBackgroundColor:
     def __init__(self, img, mode='RGB'):
 
         self.img_str = str(img)
@@ -18,7 +16,7 @@ class GetAverageColor:
             raise ValueError('Invalid mode. Only RGB and BGR image ' \
                              'mode supported.')
 
-    def get_average_color(self):
+    def get_background_color(self):
         arr_img = cv2.imread(self.img_str)
         avg_color_per_row = numpy.average(arr_img, axis=0)
         avg_color = numpy.average(avg_color_per_row, axis=0)
@@ -40,11 +38,3 @@ class GetAverageColor:
         )
         return wrapped_image
 
-
-directory = 'images/artists photo set'
-images = Path(directory).glob('*.webp')
-
-for image in images:
-    obj = GetAverageColor(image)
-    print(obj.get_average_color())
-    obj.make_image_with_background().save(f'{image}.png')
