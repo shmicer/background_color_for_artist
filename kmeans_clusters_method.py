@@ -5,7 +5,7 @@ from sklearn.cluster import KMeans
 from PIL import Image, ImageDraw, ImageOps
 
 
-class SpotifyBackgroundColor():
+class ClusterBackgroundColor():
     """Analyzes an image and finds a fitting background color.
 
     Main use is to analyze album artwork and calculate the background
@@ -44,7 +44,7 @@ class SpotifyBackgroundColor():
         self.img_from_array = Image.fromarray(img)
         self.size = self.img_from_array.size
 
-    def best_color(self, k=8, color_tol=10, plot=False):
+    def best_color(self, k=3, color_tol=3):
         """Returns a suitable background color for the given image.
 
         Uses k-means clustering to find `k` distinct colors in
@@ -61,8 +61,6 @@ class SpotifyBackgroundColor():
                 Colorfulness is defined as described by Hasler and
                 Süsstrunk (2003) in https://infoscience.epfl.ch/
                 record/33994/files/HaslerS03.pdf.
-            plot (bool): Plot the original image, k-means result and
-                calculated background color. Only used for testing.
 
         Returns:
             tuple: (R, G, B). The calculated background color.
