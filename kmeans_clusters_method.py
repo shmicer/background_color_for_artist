@@ -44,7 +44,7 @@ class SpotifyBackgroundColor():
         self.img_from_array = Image.fromarray(img)
         self.size = self.img_from_array.size
 
-    def best_color(self, k=4, color_tol=6, plot=False):
+    def best_color(self, k=8, color_tol=10, plot=False):
         """Returns a suitable background color for the given image.
 
         Uses k-means clustering to find `k` distinct colors in
@@ -68,12 +68,10 @@ class SpotifyBackgroundColor():
             tuple: (R, G, B). The calculated background color.
 
         """
-        # artwork = self.img.copy()
         self.img = self.img.reshape((self.img.shape[0]*self.img.shape[1], 3))
 
         clt = KMeans(n_clusters=k)
         clt.fit(self.img)
-        # hist = self.find_histogram(clt)
         centroids = clt.cluster_centers_
 
         colorfulness = [self.colorfulness(color[0], color[1], color[2]) for color in centroids]
@@ -102,24 +100,6 @@ class SpotifyBackgroundColor():
             mask.resize((250, 250))
         )
         return wrapped_image
-
-    def find_histogram(self, clt):
-        """Create a histogram of image.
-
-        Args:
-            clt (array_like): Input data.
-
-        Returns:
-            array: The values of the histogram.
-
-        """
-        num_labels = np.arange(0, len(np.unique(clt.labels_)) + 1)
-        hist, _ = np.histogram(clt.labels_, bins=num_labels)
-
-        hist = hist.astype('float')
-        hist /= hist.sum()
-
-        return hist
 
     def colorfulness(self, r, g, b):
         """Returns a colorfulness index of given RGB combination.
