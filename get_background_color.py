@@ -3,6 +3,8 @@ import cv2
 
 from PIL import Image, ImageOps, ImageDraw
 
+from kmeans_clusters_method import SpotifyBackgroundColor
+
 
 class GetBackgroundColor:
     def __init__(self, img, mode='RGB'):
@@ -13,7 +15,7 @@ class GetBackgroundColor:
         elif mode == 'BGR':
             self.img = Image.open(img)[..., ::-1]
         else:
-            raise ValueError('Invalid mode. Only RGB and BGR image ' \
+            raise ValueError('Invalid mode. Only RGB and BGR image '\
                              'mode supported.')
 
     def get_background_color(self):
@@ -21,10 +23,11 @@ class GetBackgroundColor:
         avg_color_per_row = numpy.average(arr_img, axis=0)
         avg_color = numpy.average(avg_color_per_row, axis=0)
         avg_color = tuple([int(i) + 15 for i in avg_color][::-1])
-        return '#%02x%02x%02x' % avg_color
+        # return '#%02x%02x%02x' % avg_color
+        return avg_color
 
-    def make_image_with_background(self):
-        wrapped_image = Image.new('RGB', (1280, 329), color=self.get_average_color())
+    def make_image_with_background(self, size=(1280, 329)):
+        wrapped_image = Image.new('RGB', size, color=self.get_background_color())
         size = self.img.size
         mask = Image.new('L', size, 0)
         draw = ImageDraw.Draw(mask)
