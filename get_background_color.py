@@ -25,19 +25,20 @@ class GetBackgroundColor:
         # return '#%02x%02x%02x' % avg_color
         return avg_color
 
-    def rgb_to_hsv(self):
+    def rgb_to_hsv_to_rgb(self):
         (r, g, b) = self.get_background_color()
         # normalize
         (r, g, b) = (r / 255, g / 255, b / 255)
         # convert to hsv
         (h, s, v) = colorsys.rgb_to_hsv(r, g, b)
         # expand HSV range
-        (h, s, v) = (int(h * 255), (int(s * 255 * 1.4) if (s * 255) < 60 else int(s * 255)), (int(v * 255) if (v * 255) > 60 else 60))
-        # (h, s, v) = (int(h * 255), int(s * 255), int(v * 255))
-        return h, s, v
+        (h, s, v) = (h, s * 0.85 if s > 0.4 else s * 1.45, v * 2)
+        (r, g, b) = colorsys.hsv_to_rgb(h, s, v)
+        (r, g, b) = (int(r * 255), int(g * 255), int(b * 255))
+        return r, g, b
 
     def make_image_with_background(self, size=(1280, 329)):
-        wrapped_image = Image.new('HSV', size, color=self.rgb_to_hsv())
+        wrapped_image = Image.new('RGB', size, color=self.rgb_to_hsv_to_rgb())
         size = self.img.size
         mask = Image.new('L', size, 0)
         draw = ImageDraw.Draw(mask)
